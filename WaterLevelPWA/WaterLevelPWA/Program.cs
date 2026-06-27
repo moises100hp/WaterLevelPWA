@@ -36,6 +36,7 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
+    // Adicione o assembly do projeto Client explicitamente
     .AddAdditionalAssemblies(typeof(WaterLevelPWA.Client._Imports).Assembly);
 
 app.Run();

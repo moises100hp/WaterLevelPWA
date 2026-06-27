@@ -1,7 +1,7 @@
 ﻿@using WaterLevelPWA.Client
 
-<Router AppAssembly="typeof(WaterLevelPWA.Components.App).Assembly"
-        AdditionalAssemblies="new[] { typeof(WaterLevelPWA.Client.ClientAssemblyMarker).Assembly }">
+<Router AppAssembly="typeof(WaterLevelPWA.Client.ClientAssemblyMarker).Assembly"
+        AdditionalAssemblies="new[] { typeof(WaterLevelPWA.Components.App).Assembly }">
     <Found Context="routeData">
         <RouteView RouteData="routeData" DefaultLayout="typeof(WaterLevelPWA.Components.Layout.MainLayout)" />
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
