@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="WaterLevelPWA/Dockerfile" />
+  </Folder>
   <Project Path="WaterLevelPWA/WaterLevelPWA.Client/WaterLevelPWA.Client.csproj" />
   <Project Path="WaterLevelPWA/WaterLevelPWA/WaterLevelPWA.csproj" />
 </Solution>
