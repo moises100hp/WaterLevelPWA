@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="WaterLevelPWA/WaterLevelPWA.Client/WaterLevelPWA.Client.csproj" />
+  <Project Path="WaterLevelPWA/WaterLevelPWA/WaterLevelPWA.csproj" />
+</Solution>

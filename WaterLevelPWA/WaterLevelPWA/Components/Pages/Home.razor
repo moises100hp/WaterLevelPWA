@@ -1,0 +1,95 @@
+﻿@page "/"
+@rendermode InteractiveAuto
+@using WaterLevelPWA.DTO;
+@inject HttpClient Http
+<PageTitle>Monitoramento de Caixa d'Água</PageTitle>
+
+<div class="container mt-4">
+    <h3>Status da Caixa d'Água</h3>
+    
+
+    @if (reading == null)
+    {
+        <div class="alert alert-info">Buscando dados do sensor...</div>
+    }
+    else
+    {
+        <div class="tank-wrapper">
+            <div class="water-tank-container">
+                <div class="level-marker min-marker" style="bottom: @(GetPercentage(reading.MinLevel))%">
+                    <span>MÍN (@reading.MinLevel L)</span>
+                </div>
+
+                <div class="level-marker max-marker" style="bottom: @(GetPercentage(reading.MaxLevel))%">
+                    <span>MÁX (@reading.MaxLevel L)</span>
+                </div>
+
+                <div class="water-fill" style="height: @(GetFillPercentage())%; background-color: @GetTankColor()">
+                    <span class="water-percentage">@reading.CurrentLevel.ToString("F0") L</span>
+                </div>
+            </div>
+        </div>
+    }
+
+    <button class="btn btn-primary mt-3" @onclick="LoadData" disabled="@isLoading">
+        @if (isLoading)
+        {
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span> Carregando...</span>
+        }
+        else
+        {
+            <span>Atualizar Agora</span>
+        }
+    </button>
+</div>
+
+@code {
+    private WaterLevelDTO? reading;
+    private bool isLoading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        try
+        {
+            // O HttpClient já aponta para a URL da sua API (configurada no Program.cs)
+            reading = await Http.GetFromJsonAsync<WaterLevelDTO>("api/WaterLevel");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao buscar dados: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private string GetTankColor()
+    {
+        if (reading == null) return "#007bff"; // Azul padrão
+
+        // Se estiver abaixo do mínimo ou acima do máximo, fica vermelho (Alerta)
+        if (reading.CurrentLevel <= reading.MinLevel || reading.CurrentLevel >= reading.MaxLevel)
+        {
+            return "#dc3545"; // Vermelho (Danger)
+        }
+
+        // Se estiver num nível saudável, fica azul (Primary)
+        return "#007bff";
+    }
+
+    private double GetPercentage(double value)
+    {
+        if (reading == null || reading.MinLevel == 0) return 0;
+        return Math.Clamp((value / reading.MaxLevel) * 100, 0, 100);
+    }
+
+    private double GetFillPercentage() => GetPercentage(reading?.CurrentLevel ?? 0);
+}
