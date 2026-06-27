@@ -1,8 +1,10 @@
 ﻿@page "/"
 @rendermode InteractiveAuto
 @using WaterLevelPWA.DTO;
-@inject HttpClient Http
+@using WaterLevelPWA.Service;
+@inject IWaterLevelService WaterLevelService
 <PageTitle>Monitoramento de Caixa d'Água</PageTitle>
+
 
 <div class="container mt-4">
     <h3>Status da Caixa d'Água</h3>
@@ -59,7 +61,7 @@
         try
         {
             // O HttpClient já aponta para a URL da sua API (configurada no Program.cs)
-            reading = await Http.GetFromJsonAsync<WaterLevelDTO>("api/WaterLevel");
+            reading = await WaterLevelService.GetLevelAsync();
         }
         catch (Exception ex)
         {

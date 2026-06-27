@@ -1,4 +1,5 @@
 using WaterLevelPWA.Components;
+using WaterLevelPWA.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+
+builder.Services.AddScoped<IWaterLevelService, WaterLevelService>();
 
 var baseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:5001/";
 
