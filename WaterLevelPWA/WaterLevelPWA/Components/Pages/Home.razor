@@ -50,10 +50,30 @@
 @code {
     private WaterLevelDTO? reading;
     private bool isLoading = false;
+    private PeriodicTimer? timer;
+    private CancellationTokenSource cts = new();
 
     protected override async Task OnInitializedAsync()
     {
         await LoadData();
+
+        _ = RunAutoUpdate();
+    }
+
+    private async Task RunAutoUpdate()
+    {
+        timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+
+        try
+        {
+            // O loop roda enquanto o token não for cancelado
+            while (await timer.WaitForNextTickAsync(cts.Token))
+            {
+                await LoadData();
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+        catch (OperationCanceledException) { /* Timer foi parado */ }
     }
 
     private async Task LoadData()
