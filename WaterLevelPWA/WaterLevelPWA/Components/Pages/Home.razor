@@ -66,14 +66,13 @@
 
         try
         {
-            // O loop roda enquanto o token não for cancelado
             while (await timer.WaitForNextTickAsync(cts.Token))
             {
                 await LoadData();
                 await InvokeAsync(StateHasChanged);
             }
         }
-        catch (OperationCanceledException) { /* Timer foi parado */ }
+        catch (OperationCanceledException) { }
     }
 
     private async Task LoadData()
@@ -81,7 +80,6 @@
         isLoading = true;
         try
         {
-            // O HttpClient já aponta para a URL da sua API (configurada no Program.cs)
             reading = await WaterLevelService.GetLevelAsync();
         }
         catch (Exception ex)
@@ -96,22 +94,27 @@
 
     private string GetTankColor()
     {
-        if (reading == null) return "#007bff"; // Azul padrão
+        if (reading == null) return "#007bff";
 
-        // Se estiver abaixo do mínimo ou acima do máximo, fica vermelho (Alerta)
         if (reading.CurrentLevel <= reading.MinLevel || reading.CurrentLevel >= reading.MaxLevel)
         {
-            return "#dc3545"; // Vermelho (Danger)
+            return "#dc3545";
         }
 
-        // Se estiver num nível saudável, fica azul (Primary)
         return "#007bff";
     }
 
     private double GetPercentage(double value)
     {
-        if (reading == null || reading.MinLevel == 0) return 0;
-        return Math.Clamp((value / reading.MaxLevel) * 100, 0, 100);
+        if (reading == null) return 0;
+
+        var min = reading.MinLevel;
+        var max = reading.MaxLevel;
+
+        if (max <= min) return 0;
+
+        var percent = ((value - min) / (max - min)) * 100.0;
+        return Math.Clamp(percent, 0, 100);
     }
 
     private double GetFillPercentage() => GetPercentage(reading?.CurrentLevel ?? 0);
