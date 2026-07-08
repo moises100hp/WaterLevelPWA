@@ -18,17 +18,39 @@
     else
     {
         <div class="tank-wrapper">
-            <div class="water-tank-container">
-                <div class="level-marker min-marker" style="bottom: @(GetPercentage(reading.MinLevel))%">
-                    <span>MÍN (@reading.MinLevel L)</span>
+            <div class="water-card">
+                <div class="card-header">
+                    <div class="header-left">
+                        <span class="status-dot"></span>
+                        <div class="header-labels">
+                            <span class="card-label">Nível Reservatório</span>
+                            <span class="card-title">Caixa D'água</span>
+                        </div>
+                    </div>
+                    <span class="card-menu">⋯</span>
                 </div>
 
-                <div class="level-marker max-marker" style="bottom: @(GetPercentage(reading.MaxLevel))%">
-                    <span>MÁX (@reading.MaxLevel L)</span>
-                </div>
+                <div class="card-body">
+                    <div class="tank-visual">
+                        <div class="tank-shell">
+                            <div class="tank-body">
+                                <div class="tank-ring ring-1"></div>
+                                <div class="tank-ring ring-2"></div>
+                                <div class="tank-ring ring-3"></div>
+                                <div class="tank-ring ring-4"></div>
+                                <div class="tank-ring ring-5"></div>
 
-                <div class="water-fill" style="height: @(GetFillPercentage())%; background-color: @GetTankColor()">
-                    <span class="water-percentage">@reading.CurrentLevel.ToString("F0") L</span>
+                                <div class="water-fill" style="height: @(GetFillPercentage())%; background-color: @GetTankColor()">
+                                    <span class="water-percentage">@GetDisplayPercentage()%</span>
+                                    <span class="water-value">@GetDisplayValue()</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tank-info">
+                        <span class="level-status @GetStatusClass()">@GetStatusText()</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -94,14 +116,38 @@
 
     private string GetTankColor()
     {
-        if (reading == null) return "#007bff";
+        if (reading == null) return "#0067d8";
 
         if (reading.CurrentLevel <= reading.MinLevel || reading.CurrentLevel >= reading.MaxLevel)
         {
             return "#dc3545";
         }
 
-        return "#007bff";
+        return "#1c73ff";
+    }
+
+    private string GetStatusText()
+    {
+        if (reading == null) return string.Empty;
+        return (reading.CurrentLevel <= reading.MinLevel || reading.CurrentLevel >= reading.MaxLevel)
+            ? "Alerta"
+            : "Normal";
+    }
+
+    private string GetStatusClass()
+    {
+        if (reading == null) return "status-normal";
+        return (reading.CurrentLevel <= reading.MinLevel || reading.CurrentLevel >= reading.MaxLevel)
+            ? "status-alert"
+            : "status-normal";
+    }
+
+    private string GetDisplayPercentage() => GetFillPercentage().ToString("F0");
+
+    private string GetDisplayValue()
+    {
+        if (reading == null) return string.Empty;
+        return $"{reading.CurrentLevel:F2} mca";
     }
 
     private double GetPercentage(double value)

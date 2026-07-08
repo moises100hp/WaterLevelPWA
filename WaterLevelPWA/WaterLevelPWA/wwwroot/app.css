@@ -50,93 +50,370 @@ h1:focus {
     border-color: #929292;
 }
 
-.water-tank-container {
-    width: 100px;
-    height: 200px;
-    border: 3px solid #333;
-    border-top: none; /* Deixa o topo aberto */
-    margin: 20px auto;
-    position: relative;
-    background-color: #f0f0f0;
+.tank-wrapper {
     display: flex;
-    align-items: flex-end; /* A água começa de baixo */
-    border-radius: 0 0 10px 10px;
+    justify-content: center;
+    padding: 0 0 10px;
 }
 
-.water-fill {
-    width: 100%;
-    background-color: #007bff; /* Cor da água */
-    transition: height 1s ease-in-out; /* Animação suave */
+.water-card {
+    width: 280px;
+    border-radius: 24px;
+    background: #f8fbff;
+    box-shadow: 0 24px 60px rgba(20, 53, 112, 0.08);
+    border: 1px solid rgba(96, 125, 179, 0.12);
+    overflow: hidden;
 }
 
-.water-percentage {
-    position: absolute;
-    width: 100%;
-    text-align: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
-    bottom: 50%;
-}
-
-.water-tank-container {
-    /* ... seu CSS anterior ... */
-    position: relative;
-}
-
-/* Indicador de Mínimo */
-.min-level-line {
-    position: absolute;
-    width: 100%;
-    height: 2px;
-    background-color: red;
-    border-top: 1px dashed red;
-}
-
-/* Indicador de Máximo */
-.max-level-line {
-    position: absolute;
-    width: 100%;
-    height: 2px;
-    background-color: orange;
-    border-top: 1px dashed orange;
-}
-
-.water-tank-container {
-    width: 120px; /* Um pouco mais largo para caber o texto */
-    height: 300px;
-    border: 3px solid #333;
-    border-radius: 0 0 10px 10px;
-    position: relative;
-    background-color: #f0f0f0;
-    margin: 20px auto;
-}
-
-.level-marker {
-    position: absolute;
-    width: 100%;
-    border-top: 2px dashed;
-    z-index: 3;
-    font-size: 0.7rem;
-    font-weight: bold;
+.card-header {
     display: flex;
-    justify-content: flex-end; /* Texto alinhado à direita */
-    padding-right: 5px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 18px 14px;
 }
 
-.min-marker {
-    border-color: #dc3545;
-    color: #dc3545;
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.max-marker {
-    border-color: #fd7e14;
-    color: #fd7e14;
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #45c96a;
+    box-shadow: 0 0 0 4px rgba(69, 201, 106, 0.12);
 }
+
+.header-labels {
+    display: grid;
+    gap: 2px;
+}
+
+.card-label {
+    display: block;
+    font-size: 0.78rem;
+    color: #607d9e;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+.card-title {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1a2945;
+}
+
+.card-menu {
+    font-size: 1.3rem;
+    color: rgba(26, 41, 69, 0.35);
+    line-height: 1;
+}
+
+.card-body {
+    padding: 0 18px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tank-visual {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.tank-shell {
+    position: relative;
+    width: 168px;
+    height: 282px;
+    background: linear-gradient(180deg, #edf3fc 0%, #dbe7f8 35%, #e8f1fc 100%);
+    border: 5px solid #d5e1f3;
+    border-top-width: 14px;
+    border-radius: 84px 84px 28px 28px;
+    box-shadow: inset 0 8px 22px rgba(255,255,255,0.75), inset 0 -10px 20px rgba(31, 82, 158, 0.08), 0 16px 30px rgba(17, 51, 94, 0.08);
+    overflow: hidden;
+}
+
+.tank-shell::before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 110px;
+    height: 34px;
+    border-radius: 56px / 18px;
+    background: linear-gradient(180deg, #eaeffa 0%, #c8d7f1 100%);
+    border: 5px solid #d5e1f3;
+    box-shadow: inset 0 4px 10px rgba(255,255,255,0.9);
+}
+
+.tank-body {
+    position: absolute;
+    inset: 0;
+    padding: 14px 14px 0;
+}
+
+.tank-ring {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    height: 2px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 999px;
+}
+
+.ring-1 { top: 28%; }
+.ring-2 { top: 42%; }
+.ring-3 { top: 56%; }
+.ring-4 { top: 70%; }
+.ring-5 { top: 84%; }
 
 .water-fill {
     position: absolute;
     bottom: 0;
+    left: 0;
     width: 100%;
-    transition: height 0.5s ease-in-out;
+    min-height: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: end;
+    gap: 4px;
+    padding-bottom: 24px;
+    background: linear-gradient(180deg, rgba(26, 131, 255, 0.94) 0%, rgba(12, 78, 235, 0.95) 100%);
+    border-top-left-radius: 28px;
+    border-top-right-radius: 28px;
+    transition: height 0.6s ease-in-out;
+    box-shadow: inset 0 12px 20px rgba(255,255,255,0.1), inset 0 0 18px rgba(13,56,148,0.4);
+    overflow: hidden;
+}
+
+.water-fill::after {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 18px;
+    right: 18px;
+    height: 10px;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.28), transparent 70%);
+}
+
+.water-percentage {
+    position: relative;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-shadow: 0 4px 18px rgba(0,0,0,0.25);
+}
+
+.water-value {
+    position: relative;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.92);
+}
+
+.tank-info {
+    margin-top: 18px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.level-status {
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    font-size: 0.86rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.status-normal {
+    background: #1ab35c;
+    color: #fff;
+}
+
+.status-alert {
+    background: #dc3545;
+    color: #fff;
+}
+
+@media (max-width: 576px) {
+    .water-card {
+        width: 100%;
+    }
+
+    .tank-shell {
+        width: 100%;
+        height: 260px;
+    }
+
+    .card-header {
+        padding: 16px 14px 12px;
+    }
+
+    .card-body {
+        padding: 0 14px 18px;
+    }
+
+    .water-percentage {
+        font-size: 1.9rem;
+    }
+}
+
+.card-body {
+    padding: 0 18px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tank-visual {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.tank-shell {
+    position: relative;
+    width: 168px;
+    height: 282px;
+    background: linear-gradient(180deg, #edf3fc 0%, #dbe7f8 35%, #e8f1fc 100%);
+    border: 5px solid #d5e1f3;
+    border-top-width: 14px;
+    border-radius: 84px 84px 28px 28px;
+    box-shadow: inset 0 8px 22px rgba(255,255,255,0.75), inset 0 -10px 20px rgba(31, 82, 158, 0.08), 0 16px 30px rgba(17, 51, 94, 0.08);
+    overflow: hidden;
+}
+
+.tank-shell::before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 110px;
+    height: 34px;
+    border-radius: 56px / 18px;
+    background: linear-gradient(180deg, #eaeffa 0%, #c8d7f1 100%);
+    border: 5px solid #d5e1f3;
+    box-shadow: inset 0 4px 10px rgba(255,255,255,0.9);
+}
+
+.tank-body {
+    position: absolute;
+    inset: 0;
+    padding: 14px 14px 0;
+}
+
+.tank-ring {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    height: 2px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 999px;
+}
+
+.ring-1 { top: 28%; }
+.ring-2 { top: 42%; }
+.ring-3 { top: 56%; }
+.ring-4 { top: 70%; }
+.ring-5 { top: 84%; }
+
+.water-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    min-height: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: end;
+    gap: 4px;
+    padding-bottom: 24px;
+    background: linear-gradient(180deg, rgba(26, 131, 255, 0.94) 0%, rgba(12, 78, 235, 0.95) 100%);
+    border-top-left-radius: 28px;
+    border-top-right-radius: 28px;
+    transition: height 0.6s ease-in-out;
+    box-shadow: inset 0 12px 20px rgba(255,255,255,0.1), inset 0 0 18px rgba(13,56,148,0.4);
+    overflow: hidden;
+}
+
+.water-fill::after {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 18px;
+    right: 18px;
+    height: 10px;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.28), transparent 70%);
+}
+
+.water-percentage {
+    position: relative;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-shadow: 0 4px 18px rgba(0,0,0,0.25);
+}
+
+.water-value {
+    position: relative;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.92);
+}
+
+.tank-info {
+    margin-top: 18px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.level-status {
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    font-size: 0.86rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.status-normal {
+    background: #1ab35c;
+    color: #fff;
+}
+
+.status-alert {
+    background: #dc3545;
+    color: #fff;
+}
+
+@media (max-width: 576px) {
+    .water-card {
+        width: 100%;
+    }
+
+    .tank-shell {
+        width: 100%;
+        height: 260px;
+    }
+
+    .card-header {
+        padding: 16px 14px 12px;
+    }
+
+    .card-body {
+        padding: 0 14px 18px;
+    }
+
+    .water-percentage {
+        font-size: 1.9rem;
+    }
 }
