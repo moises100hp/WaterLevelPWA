@@ -56,6 +56,38 @@
         </div>
     }
 
+    <div class="mt-4">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label for="deviceInput" class="form-label">Dispositivo</label>
+                <InputText id="deviceInput" @bind-Value="newDeviceId" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label for="minInput" class="form-label">Nível mínimo (mca)</label>
+                <InputNumber id="minInput" @bind-Value="newMinLevel" class="form-control" step="0.01" min="0" />
+            </div>
+            <div class="col-md-3">
+                <label for="maxInput" class="form-label">Nível máximo (mca)</label>
+                <InputNumber id="maxInput" @bind-Value="newMaxLevel" class="form-control" step="0.01" min="0" />
+            </div>
+            <div class="col-md-3">
+                <label for="levelInput" class="form-label">Nível atual (mca)</label>
+                <InputNumber id="levelInput" @bind-Value="newLevel" class="form-control" step="0.01" min="0" />
+            </div>
+        </div>
+        <button class="btn btn-secondary mt-3" @onclick="SubmitLevel" disabled="@isSubmitting">
+            @if (isSubmitting)
+            {
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <span> Enviando...</span>
+            }
+            else
+            {
+                <span>Enviar Nível</span>
+            }
+        </button>
+    </div>
+
     <button class="btn btn-primary mt-3" @onclick="LoadData" disabled="@isLoading">
         @if (isLoading)
         {
@@ -71,7 +103,12 @@
 
 @code {
     private WaterLevelDTO? reading;
+    private string newDeviceId = string.Empty;
+    private double newMinLevel;
+    private double newMaxLevel;
+    private double newLevel;
     private bool isLoading = false;
+    private bool isSubmitting = false;
     private PeriodicTimer? timer;
     private CancellationTokenSource cts = new();
 
@@ -103,6 +140,13 @@
         try
         {
             reading = await WaterLevelService.GetLevelAsync();
+            if (reading != null)
+            {
+                newDeviceId = reading.DeviceId;
+                newMinLevel = reading.MinLevel;
+                newMaxLevel = reading.MaxLevel;
+                newLevel = reading.CurrentLevel;
+            }
         }
         catch (Exception ex)
         {
@@ -111,6 +155,27 @@
         finally
         {
             isLoading = false;
+        }
+    }
+
+    private async Task SubmitLevel()
+    {
+        isSubmitting = true;
+        try
+        {
+            var updatedReading = await WaterLevelService.SetLevelAsync(newDeviceId, newMinLevel, newMaxLevel, newLevel);
+            if (updatedReading != null)
+            {
+                reading = updatedReading;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao enviar nível: {ex.Message}");
+        }
+        finally
+        {
+            isSubmitting = false;
         }
     }
 

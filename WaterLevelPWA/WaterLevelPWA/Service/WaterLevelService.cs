@@ -1,4 +1,5 @@
-﻿using WaterLevelPWA.DTO;
+﻿using System.Net.Http.Json;
+using WaterLevelPWA.DTO;
 
 namespace WaterLevelPWA.Service
 {
@@ -9,5 +10,18 @@ namespace WaterLevelPWA.Service
 
         public async Task<WaterLevelDTO?> GetLevelAsync()
             => await _http.GetFromJsonAsync<WaterLevelDTO>("api/WaterLevel");
+
+        public async Task<WaterLevelDTO?> SetLevelAsync(string deviceId, double minLevel, double maxLevel, double currentLevel)
+        {
+            var response = await _http.PostAsJsonAsync("api/WaterLevel", new WaterLevelDTO
+            {
+                DeviceId = deviceId,
+                MinLevel = minLevel,
+                MaxLevel = maxLevel,
+                CurrentLevel = currentLevel
+            });
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<WaterLevelDTO>();
+        }
     }
 }
