@@ -1,0 +1,46 @@
+@page "/usuarios"
+@namespace WaterLevelPWA.Components.Pages
+<PageTitle>Usuários — AMA Eletrônica 220</PageTitle>
+
+<div class="brand-banner">
+    <img src="logo.jpeg" alt="Logomarca" class="brand-logo" />
+</div>
+
+<div class="container mt-3 users-page">
+    <h3 class="page-title text-center mb-3">Usuários</h3>
+
+    <div class="users-notice">Gerenciamento de usuários em desenvolvimento</div>
+
+    <div class="users-table-wrapper">
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Perfil</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in exampleUsers)
+                {
+                    <tr>
+                        <td>@user.Name</td>
+                        <td>@user.Email</td>
+                        <td><span class="role-badge">@user.Role</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    private record ExampleUser(string Name, string Email, string Role);
+
+    private readonly List<ExampleUser> exampleUsers = new()
+    {
+        new ExampleUser("Maria Silva", "maria.silva@example.com", "Administrador"),
+        new ExampleUser("João Pereira", "joao.pereira@example.com", "Operador"),
+        new ExampleUser("Ana Costa", "ana.costa@example.com", "Visualizador"),
+    };
+}

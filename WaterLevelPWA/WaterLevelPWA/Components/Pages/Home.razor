@@ -1,15 +1,42 @@
-﻿@page "/"
+@page "/"
 @namespace WaterLevelPWA.Components.Pages
 @rendermode InteractiveServer
+@implements IDisposable
 @using WaterLevelPWA.DTO;
 @using WaterLevelPWA.Service;
 @inject IWaterLevelService WaterLevelService
-<PageTitle>Monitoramento de Caixa d'Água</PageTitle>
+<PageTitle>Monitoramento de Caixa d'Água — AMA Eletrônica 220</PageTitle>
 
 
-<div class="container mt-4">
-    <h3>Status da Caixa d'Água</h3>
-    
+<div class="brand-banner">
+    <img src="logo.jpeg" alt="Logomarca" class="brand-logo" />
+</div>
+
+<div class="container mt-3">
+    <h3 class="page-title text-center mb-3">Monitoramento de Caixa d'Água — AMA Eletrônica 220</h3>
+
+    <div class="control-bar">
+        @if (reading != null)
+        {
+            <div class="tank-height-field">
+                <label for="tankHeight">Altura da caixa (m)</label>
+                <input id="tankHeight" type="text" inputmode="decimal" class="form-control tank-height-input"
+                       @bind-value="tankHeightInput" @bind-value:event="oninput" />
+            </div>
+        }
+
+        <button class="btn btn-primary refresh-btn" @onclick="ManualRefresh" disabled="@isLoading">
+            @if (isLoading)
+            {
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <span> Carregando...</span>
+            }
+            else
+            {
+                <span>Atualizar Agora</span>
+            }
+        </button>
+    </div>
 
     @if (reading == null)
     {
@@ -17,70 +44,179 @@
     }
     else
     {
-        <div class="tank-wrapper">
-            <div class="water-tank-container">
-                <div class="level-marker min-marker" style="bottom: @(GetPercentage(reading.MinLevel))%">
-                    <span>MÍN (@reading.MinLevel L)</span>
-                </div>
+        <div class="supply-scene">
+            <svg class="scene-underground-svg" viewBox="0 0 600 470" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+                <defs>
+                    <linearGradient id="earthGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#3a2a1e" />
+                        <stop offset="40%" stop-color="#2a1d14" />
+                        <stop offset="100%" stop-color="#170f0a" />
+                    </linearGradient>
+                    <linearGradient id="wellWaterGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#2f8fc4" />
+                        <stop offset="100%" stop-color="#0a3450" />
+                    </linearGradient>
+                    <linearGradient id="pumpMetalGradient" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stop-color="#a3aeb4" />
+                        <stop offset="50%" stop-color="#5c666b" />
+                        <stop offset="100%" stop-color="#2a3033" />
+                    </linearGradient>
+                </defs>
 
-                <div class="level-marker max-marker" style="bottom: @(GetPercentage(reading.MaxLevel))%">
-                    <span>MÁX (@reading.MaxLevel L)</span>
-                </div>
+                <!-- Subsolo (terra em camadas) -->
+                <rect x="0" y="317" width="600" height="153" fill="url(#earthGradient)" />
+                <line x1="0" y1="352" x2="600" y2="352" stroke="rgba(0,0,0,0.28)" stroke-width="2" />
+                <line x1="0" y1="393" x2="600" y2="393" stroke="rgba(0,0,0,0.22)" stroke-width="2" />
+                <line x1="0" y1="432" x2="600" y2="432" stroke="rgba(0,0,0,0.18)" stroke-width="2" />
 
-                <div class="water-fill" style="height: @(GetFillPercentage())%; background-color: @GetTankColor()">
-                    <span class="water-percentage">@reading.CurrentLevel.ToString("F0") L</span>
+                <!-- Linha do solo -->
+                <line x1="0" y1="317" x2="600" y2="317" stroke="rgba(255,255,255,0.22)" stroke-width="2" />
+
+                <!-- Poço artesiano -->
+                <rect x="115" y="317" width="50" height="143" rx="4" fill="rgba(0,0,0,0.4)" stroke="rgba(255,255,255,0.14)" stroke-width="2" />
+                <rect x="118" y="378" width="44" height="80" fill="url(#wellWaterGradient)" opacity="0.88" />
+                <ellipse cx="140" cy="317" rx="34" ry="8" fill="none" stroke="rgba(255,255,255,0.32)" stroke-width="3" />
+
+                <!-- Tubulação: bomba -> sobe -> curva -> horizontal -> curva -> sobe -> topo da caixa -->
+                <path class="pipe-casing" d="M140,370 L140,255 Q140,225 170,225 L340,225 Q366,225 366,195 L366,40 Q366,12 392,12 L412,12" fill="none" />
+                <path class="pipe-flow @(isFlowing ? "is-flowing" : "")" d="M140,370 L140,255 Q140,225 170,225 L340,225 Q366,225 366,195 L366,40 Q366,12 392,12 L412,12" fill="none" />
+
+                <!-- Bomba submersa + motor -->
+                <g class="pump-unit @(isFlowing ? "is-pumping" : "")">
+                    <circle class="motor-glow" cx="140" cy="388" r="24" />
+                    <circle class="motor-body" cx="140" cy="388" r="18" fill="url(#pumpMetalGradient)" stroke="#1c2224" stroke-width="2" />
+                    <rect x="124" y="402" width="32" height="50" rx="6" fill="url(#pumpMetalGradient)" stroke="#1c2224" stroke-width="2" />
+                    <line x1="126" y1="417" x2="154" y2="417" stroke="#1c2224" stroke-width="1.5" opacity="0.5" />
+                    <line x1="126" y1="432" x2="154" y2="432" stroke="#1c2224" stroke-width="1.5" opacity="0.5" />
+                </g>
+            </svg>
+
+            <div class="scene-tank-slot">
+                <div class="tank-wrapper">
+                    <div class="water-tower">
+                        <div class="tank-cap"></div>
+                        <div class="tank-body">
+                            <div class="water-fill @(IsAlert ? "is-alert" : "") @(isTurbulent ? "is-turbulent" : "")" style="height: @(FormatInvariant(GetFillPercentage()))%">
+                                <div class="water-surface">
+                                    <div class="water-bob">
+                                        <svg class="wave wave-back" viewBox="0 0 400 40" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+                                            <path d="M-100,20 Q-75,10 -50,20 T0,20 T50,20 T100,20 T150,20 T200,20 T250,20 T300,20 T350,20 T400,20 T450,20 T500,20 L500,40 L-100,40 Z" />
+                                        </svg>
+                                        <svg class="wave wave-front" viewBox="0 0 400 40" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+                                            <path d="M-75,20 Q-50,34 -25,20 T25,20 T75,20 T125,20 T175,20 T225,20 T275,20 T325,20 T375,20 T425,20 T475,20 L475,40 L-75,40 Z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                @if (isTurbulent)
+                                {
+                                    <div class="water-bubbles">
+                                        <span class="bubble" style="left:12%; width:6px; height:6px; animation-duration:1.6s; animation-delay:0s;"></span>
+                                        <span class="bubble" style="left:28%; width:4px; height:4px; animation-duration:1.9s; animation-delay:0.3s;"></span>
+                                        <span class="bubble" style="left:47%; width:7px; height:7px; animation-duration:1.4s; animation-delay:0.6s;"></span>
+                                        <span class="bubble" style="left:64%; width:5px; height:5px; animation-duration:2.1s; animation-delay:0.15s;"></span>
+                                        <span class="bubble" style="left:80%; width:4px; height:4px; animation-duration:1.7s; animation-delay:0.45s;"></span>
+                                    </div>
+                                }
+                            </div>
+                            <div class="tank-shine"></div>
+                            <div class="tank-readout">
+                                <span class="tank-percent">@GetReadoutText()</span>
+                            </div>
+                        </div>
+                        <div class="tank-stand"></div>
+                    </div>
+
+                    @if (IsAlert)
+                    {
+                        <div class="tank-alert">@AlertMessage</div>
+                    }
                 </div>
             </div>
         </div>
     }
-
-    <button class="btn btn-primary mt-3" @onclick="LoadData" disabled="@isLoading">
-        @if (isLoading)
-        {
-            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            <span> Carregando...</span>
-        }
-        else
-        {
-            <span>Atualizar Agora</span>
-        }
-    </button>
 </div>
 
 @code {
+    // Ajuste conforme o identificador do seu sensor
+    private const string DeviceId = "caixa-01";
+
+    // Polling de 1s é agressivo para uma caixa d'água; 5s já é bem responsivo
+    // e reduz 5x a carga na API. (Para tempo real de verdade, o próximo passo é SignalR.)
+    private static readonly TimeSpan PollInterval = TimeSpan.FromSeconds(5);
+
+    // Duração da transição de altura no CSS (.water-fill); mantida em sincronia
+    // para saber quando a água "termina" de subir/descer antes de acalmar as ondas.
+    private static readonly TimeSpan HeightTransitionDuration = TimeSpan.FromSeconds(1.8);
+    private static readonly TimeSpan TurbulenceHoldAfterTransition = TimeSpan.FromSeconds(2.2);
+
+    // Quanto tempo a animação de fluxo na tubulação (e o pulso do motor) continua
+    // depois que a caixa termina de subir — só para a subida ficar perceptível.
+    private static readonly TimeSpan FlowHoldAfterTransition = TimeSpan.FromSeconds(3);
+
     private WaterLevelDTO? reading;
+    private double? previousLevel;
+    private bool isTurbulent;
+    private bool isFlowing;
     private bool isLoading = false;
     private PeriodicTimer? timer;
-    private CancellationTokenSource cts = new();
+    private CancellationTokenSource? turbulenceCts;
+    private CancellationTokenSource? flowCts;
+    private readonly CancellationTokenSource cts = new();
+
+    // Formato brasileiro (vírgula decimal); valor lembrado apenas durante a sessão da página
+    private string tankHeightInput = "1,00";
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadData();
-
+        await LoadData(showSpinner: true);
         _ = RunAutoUpdate();
     }
 
     private async Task RunAutoUpdate()
     {
-        timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+        timer = new PeriodicTimer(PollInterval);
 
         try
         {
             while (await timer.WaitForNextTickAsync(cts.Token))
             {
-                await LoadData();
+                // Sem spinner no refresh automático, para o botão não piscar a cada ciclo
+                await LoadData(showSpinner: false);
                 await InvokeAsync(StateHasChanged);
             }
         }
         catch (OperationCanceledException) { }
     }
 
-    private async Task LoadData()
+    private Task ManualRefresh() => LoadData(showSpinner: true);
+
+    private async Task LoadData(bool showSpinner)
     {
-        isLoading = true;
+        if (showSpinner) isLoading = true;
         try
         {
-            reading = await WaterLevelService.GetLevelAsync();
+            var updated = await WaterLevelService.GetLevelAsync(DeviceId);
+
+            // Só agita a água se o nível realmente mudou entre uma atualização e outra;
+            // leituras repetidas (nada mudou) mantêm a superfície apenas na ondulação calma.
+            if (updated != null && previousLevel.HasValue && Math.Abs(updated.CurrentLevel - previousLevel.Value) > 0.0001)
+            {
+                TriggerTurbulence();
+
+                // Fluxo na tubulação (bomba -> caixa) só faz sentido quando o nível sobe;
+                // se caiu, a água não está sendo bombeada, então a tubulação fica parada.
+                if (updated.CurrentLevel > previousLevel.Value)
+                {
+                    TriggerFlow();
+                }
+            }
+
+            if (updated != null)
+            {
+                previousLevel = updated.CurrentLevel;
+            }
+
+            reading = updated;
         }
         catch (Exception ex)
         {
@@ -88,21 +224,68 @@
         }
         finally
         {
-            isLoading = false;
+            if (showSpinner) isLoading = false;
         }
     }
 
-    private string GetTankColor()
+    private void TriggerTurbulence()
     {
-        if (reading == null) return "#007bff";
+        turbulenceCts?.Cancel();
+        turbulenceCts?.Dispose();
+        turbulenceCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token);
+        isTurbulent = true;
 
-        if (reading.CurrentLevel <= reading.MinLevel || reading.CurrentLevel >= reading.MaxLevel)
-        {
-            return "#dc3545";
-        }
-
-        return "#007bff";
+        _ = SettleTurbulenceAfterDelay(turbulenceCts.Token);
     }
+
+    private async Task SettleTurbulenceAfterDelay(CancellationToken token)
+    {
+        try
+        {
+            // Espera a transição de altura terminar e a água "assentar" um pouco mais
+            // antes de reduzir a agitação de volta ao estado calmo (gradualmente, via CSS).
+            await Task.Delay(HeightTransitionDuration + TurbulenceHoldAfterTransition, token);
+            isTurbulent = false;
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (OperationCanceledException) { }
+    }
+
+    private void TriggerFlow()
+    {
+        flowCts?.Cancel();
+        flowCts?.Dispose();
+        flowCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token);
+        isFlowing = true;
+
+        _ = SettleFlowAfterDelay(flowCts.Token);
+    }
+
+    private async Task SettleFlowAfterDelay(CancellationToken token)
+    {
+        try
+        {
+            await Task.Delay(HeightTransitionDuration + FlowHoldAfterTransition, token);
+            isFlowing = false;
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (OperationCanceledException) { }
+    }
+
+    private bool IsAlert =>
+        reading != null && (reading.CurrentLevel <= reading.MinLevel || reading.CurrentLevel >= reading.MaxLevel);
+
+    private string AlertMessage
+    {
+        get
+        {
+            if (reading == null) return string.Empty;
+            return reading.CurrentLevel <= reading.MinLevel ? "Nível baixo!" : "Nível alto!";
+        }
+    }
+
+    private static string FormatInvariant(double value) =>
+        value.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
     private double GetPercentage(double value)
     {
@@ -118,4 +301,38 @@
     }
 
     private double GetFillPercentage() => GetPercentage(reading?.CurrentLevel ?? 0);
+
+    private bool TryGetTankHeightMeters(out double meters)
+    {
+        var normalized = (tankHeightInput ?? string.Empty).Replace(",", ".").Trim();
+        return double.TryParse(normalized, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out meters) && meters >= 0;
+    }
+
+    // Recalculada a cada tecla digitada (via @bind-value:event="oninput"), sem depender de sair do campo
+    private string GetReadoutText()
+    {
+        var percentText = $"{GetFillPercentage():F0}%";
+
+        if (!TryGetTankHeightMeters(out var tankHeightMeters))
+        {
+            return percentText;
+        }
+
+        var waterHeightMeters = tankHeightMeters * (GetFillPercentage() / 100.0);
+        return $"{percentText} · {FormatMeters(waterHeightMeters)} m";
+    }
+
+    private static string FormatMeters(double value) =>
+        value.ToString("F2", System.Globalization.CultureInfo.InvariantCulture).Replace(".", ",");
+
+    // Essencial: sem isso, cada usuário que abre a página deixa um loop de polling
+    // rodando para sempre no servidor, mesmo depois de fechar a aba.
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+        timer?.Dispose();
+        turbulenceCts?.Dispose();
+        flowCts?.Dispose();
+    }
 }

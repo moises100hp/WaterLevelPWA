@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Projeto water level/WaterLevelPWA/WaterLevelPWA/WaterLevelPWA/**)",
+      "Bash(dotnet build *)",
+      "Bash(dotnet build-server shutdown *)",
+      "Read(//c/Projeto water level/WaterLevelPWA/WaterLevelPWA/**)",
+      "Bash(rm -rf WaterLevelPWA/bin WaterLevelPWA/obj WaterLevelPWA.Client/bin WaterLevelPWA.Client/obj)",
+      "PowerShell(Get-MpPreference *)",
+      "Read(//c/Projeto water level/WaterLevelPWA/**)",
+      "Read(//c/Projeto water level/WaterLevelAPI/**)",
+      "Bash(dotnet --version)",
+      "PowerShell(Get-Process *)",
+      "PowerShell(Stop-Process *)"
+    ]
+  }
+}

@@ -1,5 +1,21 @@
+:root {
+    --brand-green: #22b573;
+    --brand-blue: #146b8c;
+    --brand-gradient: linear-gradient(135deg, var(--brand-green) 0%, var(--brand-blue) 100%);
+    --font-heading: 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --font-body: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100%;
+    background: linear-gradient(135deg, #0a2540 0%, #0d3b2e 100%);
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
 }
 
 a, .btn-link {
@@ -7,9 +23,22 @@ a, .btn-link {
 }
 
 .btn-primary {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    letter-spacing: 0.02em;
     color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    background: var(--brand-gradient);
+    border: none;
+    transition: filter 0.2s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    filter: brightness(1.08);
+}
+
+.btn-primary:active {
+    transform: translateY(1px);
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -50,93 +79,583 @@ h1:focus {
     border-color: #929292;
 }
 
-.water-tank-container {
-    width: 100px;
-    height: 200px;
-    border: 3px solid #333;
-    border-top: none; /* Deixa o topo aberto */
-    margin: 20px auto;
-    position: relative;
-    background-color: #f0f0f0;
+.page-title {
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: -0.01em;
+    color: var(--brand-green);
+}
+
+/* Faixa/banner com logomarca: barra superior fina, colada no topo, sempre visível e sem cortes */
+
+.brand-banner {
+    position: sticky;
+    top: 0;
+    z-index: 20;
     display: flex;
-    align-items: flex-end; /* A água começa de baixo */
-    border-radius: 0 0 10px 10px;
+    justify-content: center;
+    align-items: center;
+    background-color: #1a1a1a;
+    margin: -1.1rem -1.5rem 1rem;
+    padding: 0.3rem 0;
 }
 
-.water-fill {
-    width: 100%;
-    background-color: #007bff; /* Cor da água */
-    transition: height 1s ease-in-out; /* Animação suave */
+.brand-logo {
+    height: clamp(40px, 9vw, 90px);
+    max-height: 90px;
+    width: auto;
+    max-width: 85%;
+    object-fit: contain;
+    display: block;
 }
 
-.water-percentage {
-    position: absolute;
-    width: 100%;
+@media (min-width: 641px) {
+    .brand-banner {
+        margin-left: -2rem;
+        margin-right: -1.5rem;
+    }
+}
+
+/* Barra de controles: campo de altura + botão "Atualizar Agora", lado a lado e alinhados à esquerda */
+
+.control-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 0.6rem 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.refresh-btn {
+    white-space: nowrap;
+}
+
+/* Caixa d'água estilo condomínio brasileiro (polietileno azul) */
+
+.tank-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1rem auto;
+    padding: 0 1rem;
+    max-width: 100%;
+}
+
+.tank-height-field {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+}
+
+.tank-height-field label {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.tank-height-input {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    width: 120px;
+    max-width: 40vw;
     text-align: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
-    bottom: 50%;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #fff;
 }
 
-.water-tank-container {
-    /* ... seu CSS anterior ... */
+.tank-height-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.tank-height-input:focus {
+    background-color: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #fff;
+}
+
+.water-tower {
+    --tower-width: clamp(130px, 40vw, 200px);
     position: relative;
+    width: var(--tower-width);
+    max-width: 100%;
+    margin: 0 auto;
 }
 
-/* Indicador de Mínimo */
-.min-level-line {
-    position: absolute;
-    width: 100%;
-    height: 2px;
-    background-color: red;
-    border-top: 1px dashed red;
-}
-
-/* Indicador de Máximo */
-.max-level-line {
-    position: absolute;
-    width: 100%;
-    height: 2px;
-    background-color: orange;
-    border-top: 1px dashed orange;
-}
-
-.water-tank-container {
-    width: 120px; /* Um pouco mais largo para caber o texto */
-    height: 300px;
-    border: 3px solid #333;
-    border-radius: 0 0 10px 10px;
+.tank-cap {
     position: relative;
-    background-color: #f0f0f0;
-    margin: 20px auto;
-}
-
-.level-marker {
-    position: absolute;
+    z-index: 2;
     width: 100%;
-    border-top: 2px dashed;
-    z-index: 3;
-    font-size: 0.7rem;
-    font-weight: bold;
-    display: flex;
-    justify-content: flex-end; /* Texto alinhado à direita */
-    padding-right: 5px;
+    height: calc(var(--tower-width) * 0.209);
+    margin-bottom: calc(var(--tower-width) * -0.1045);
+    border-radius: 50%;
+    background: linear-gradient(180deg, #bdeaff 0%, #6cc3ec 45%, #2f8fc4 100%);
+    box-shadow:
+        inset 0 -6px 10px rgba(0, 0, 0, 0.18),
+        inset 0 4px 8px rgba(255, 255, 255, 0.55),
+        0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-.min-marker {
-    border-color: #dc3545;
-    color: #dc3545;
+.tank-body {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    aspect-ratio: 220 / 280;
+    border-radius: 22px 22px 42px 42px;
+    background: linear-gradient(90deg,
+        #06304f 0%,
+        #145d8c 16%,
+        #2f96c9 34%,
+        #1c7cad 52%,
+        #0d4d78 76%,
+        #062a45 100%);
+    box-shadow:
+        inset -16px 0 24px rgba(0, 0, 0, 0.35),
+        inset 16px 0 20px rgba(255, 255, 255, 0.08),
+        0 12px 18px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
 }
 
-.max-marker {
-    border-color: #fd7e14;
-    color: #fd7e14;
+.tank-shine {
+    position: absolute;
+    top: 4%;
+    left: 14%;
+    width: 14%;
+    height: 92%;
+    border-radius: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.05));
+    filter: blur(3px);
+    pointer-events: none;
+}
+
+.tank-stand {
+    width: 65%;
+    height: calc(var(--tower-width) * 0.0727);
+    margin: 0 auto;
+    background: linear-gradient(180deg, #6a6a6a, #333333);
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .water-fill {
     position: absolute;
     bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, #8fe0ff 0%, #4fb3e8 45%, #1e88c7 100%);
+    transition: height 1.8s cubic-bezier(0.22, 1, 0.36, 1), background 0.6s ease;
+    overflow: hidden;
+}
+
+.water-fill.is-alert {
+    background: linear-gradient(180deg, #ff8a8a 0%, #f2504f 45%, #c62828 100%);
+}
+
+/* Viewport for the surface ripple. Its own size stays fixed; everything that
+   moves (the up/down bob and the sideways drift of the two wave layers)
+   happens on children via transform, so this box only needs to clip them. */
+.water-surface {
+    position: absolute;
+    top: -22px;
+    left: 0;
+    right: 0;
+    height: 46px;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* .water-bob carries the whole surface (both wave layers) up and down —
+   this is the "the water visibly breathes" motion. At rest it's a slow,
+   continuous sine-like vaivém; while turbulent it plays a single decaying
+   oscillation (3x the amplitude, ~2x the speed at first, easing back to
+   the resting amplitude) instead of looping, so it reads as "water was
+   just poured in and is settling" rather than a permanently rougher sea. */
+.water-bob {
+    position: absolute;
+    inset: 0;
+    animation: water-bob-calm 4.5s ease-in-out infinite;
+}
+
+.water-fill.is-turbulent .water-bob {
+    animation: water-bob-turbulent 4s cubic-bezier(0.36, 0.07, 0.19, 0.97) 1 both;
+}
+
+@keyframes water-bob-calm {
+    0%, 100% { transform: translateY(0) scaleY(1); }
+    25% { transform: translateY(-8px) scaleY(1); }
+    75% { transform: translateY(8px) scaleY(1); }
+}
+
+@keyframes water-bob-turbulent {
+    0%   { transform: translateY(0) scaleY(1); }
+    8%   { transform: translateY(24px) scaleY(1.6); }
+    16%  { transform: translateY(-22px) scaleY(1.55); }
+    24%  { transform: translateY(20px) scaleY(1.45); }
+    33%  { transform: translateY(-17px) scaleY(1.35); }
+    42%  { transform: translateY(14px) scaleY(1.25); }
+    52%  { transform: translateY(-10px) scaleY(1.15); }
+    62%  { transform: translateY(7px) scaleY(1.08); }
+    73%  { transform: translateY(-4px) scaleY(1.03); }
+    85%  { transform: translateY(2px) scaleY(1.01); }
+    100% { transform: translateY(0) scaleY(1); }
+}
+
+/* The two wave layers: a lighter, semi-transparent one behind, and one in
+   the tank's own water tone in front, drifting sideways at different
+   speeds/directions. Each SVG is twice the container width and its path
+   repeats every quarter of that width, so looping translateX from 0 to
+   -25% is seamless. */
+.wave {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 100%;
+    display: block;
+}
+
+.wave-back {
+    fill: rgba(255, 255, 255, 0.3);
+    animation: wave-drift 9s linear infinite;
+}
+
+.wave-front {
+    fill: rgba(143, 224, 255, 0.55);
+    animation: wave-drift 5.5s linear infinite reverse;
+}
+
+.water-fill.is-turbulent .wave-back {
+    animation-duration: 4.5s;
+}
+
+.water-fill.is-turbulent .wave-front {
+    animation-duration: 2.75s;
+}
+
+@keyframes wave-drift {
+    from { transform: translateX(0); }
+    to { transform: translateX(-25%); }
+}
+
+/* Bubbles only render in the DOM while turbulent (see Home.razor), so they
+   disappear on their own once the water settles. */
+.water-bubbles {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.bubble {
+    position: absolute;
+    bottom: 4%;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.55);
+    animation-name: bubble-rise;
+    animation-timing-function: ease-in;
+    animation-iteration-count: infinite;
+    opacity: 0;
+}
+
+@keyframes bubble-rise {
+    0%   { transform: translateY(0) scale(0.6); opacity: 0; }
+    15%  { opacity: 0.85; }
+    80%  { opacity: 0.35; }
+    100% { transform: translateY(-170px) scale(1); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .water-bob, .wave, .bubble {
+        animation: none !important;
+    }
+}
+
+.tank-readout {
+    position: absolute;
+    z-index: 5;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+    pointer-events: none;
+}
+
+.tank-percent {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 4vw, 1.5rem);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+    text-align: center;
+}
+
+.tank-alert {
+    color: #c62828;
+    font-weight: 700;
+    background: #ffe5e5;
+    border: 1px solid #c62828;
+    border-radius: 8px;
+    padding: 0.4rem 0.9rem;
+}
+
+/* Cena completa do sistema de abastecimento: poço artesiano + bomba submersa
+   + motor + tubulação, com a caixa d'água (acima) como peça central. A cena
+   inteira é um único bloco de proporção fixa (aspect-ratio), então ela encolhe
+   de forma proporcional em telas pequenas em vez de reorganizar os elementos. */
+.supply-scene {
+    position: relative;
+    width: clamp(320px, 94vw, 560px);
+    aspect-ratio: 600 / 470;
+    margin: 1.5rem auto 1rem;
+}
+
+.scene-underground-svg {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    transition: height 0.5s ease-in-out;
+    height: 100%;
+    display: block;
+}
+
+/* Cano "casco" (sempre visível, parado) por baixo do traço animado de fluxo. */
+.pipe-casing {
+    fill: none;
+    stroke: #4d6470;
+    stroke-width: 10;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Traço tracejado que "escorre" pelo cano quando a caixa está subindo de nível. */
+.pipe-flow {
+    fill: none;
+    stroke: rgba(143, 224, 255, 0.9);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 3 16;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.pipe-flow.is-flowing {
+    opacity: 1;
+    animation: pipe-flow-move 1.1s linear infinite;
+}
+
+/* Offset de 38 = 2x o período do dasharray (3 + 16), garante um loop sem emenda.
+   Diminuir o offset desloca o traço no sentido do caminho: bomba -> caixa. */
+@keyframes pipe-flow-move {
+    from { stroke-dashoffset: 38; }
+    to { stroke-dashoffset: 0; }
+}
+
+.motor-body {
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4));
+}
+
+/* Brilho/pulso do motor, só visível enquanto a bomba está "funcionando"
+   (mesma janela de tempo da animação de fluxo na tubulação). */
+.motor-glow {
+    fill: rgba(143, 224, 255, 0.35);
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: opacity 0.4s ease;
+}
+
+.pump-unit.is-pumping .motor-glow {
+    opacity: 1;
+    animation: motor-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes motor-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.35; }
+    50% { transform: scale(1.35); opacity: 0.75; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pipe-flow, .motor-glow {
+        animation: none !important;
+    }
+}
+
+/* Posiciona a caixa d'água existente (inalterada) dentro da cena, alinhada
+   pela base à linha do solo do SVG (317/470 = 32,55% a partir do fundo). */
+.scene-tank-slot {
+    position: absolute;
+    left: 61%;
+    width: 34%;
+    bottom: 32.55%;
+    z-index: 1;
+    container-type: inline-size;
+}
+
+.scene-tank-slot .tank-wrapper {
+    margin: 0;
+    padding: 0;
+}
+
+.scene-tank-slot .water-tower {
+    --tower-width: clamp(90px, 100cqi, 190px);
+}
+
+@media (max-width: 480px) {
+    .control-bar {
+        gap: 0.5rem 0.75rem;
+    }
+}
+
+/* Cartão com efeito vidro (glass), reutilizado nas páginas Sobre Nós e Usuários */
+
+.about-page,
+.users-page {
+    max-width: 760px;
+}
+
+.about-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 1.5rem;
+    color: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.about-card p {
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+.about-card p:last-child {
+    margin-bottom: 0;
+}
+
+.contact-title {
+    color: var(--brand-green);
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.contact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.contact-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.bi-icon {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 1.1rem;
+    height: 1.1rem;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    opacity: 0.85;
+}
+
+.bi-telephone-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' class='bi bi-telephone-fill' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z'/%3E%3C/svg%3E");
+}
+
+.bi-envelope-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' class='bi bi-envelope-fill' viewBox='0 0 16 16'%3E%3Cpath d='M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414zM0 4.697v7.104l5.803-3.558zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586zm3.436-.586L16 11.801V4.697z'/%3E%3C/svg%3E");
+}
+
+.bi-instagram-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' class='bi bi-instagram' viewBox='0 0 16 16'%3E%3Cpath d='M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599s.453.546.598.92c.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598 2.5 2.5 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92m-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217m0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334'/%3E%3C/svg%3E");
+}
+
+/* Página Usuários: aviso discreto + tabela com efeito vidro */
+
+.users-notice {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    margin-bottom: 1.25rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.users-table-wrapper {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    margin-bottom: 1.5rem;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: rgba(255, 255, 255, 0.92);
+    font-family: var(--font-body);
+}
+
+.users-table thead th {
+    text-align: left;
+    padding: 0.9rem 1.25rem;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--brand-green);
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.users-table tbody td {
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.users-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.users-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    background: rgba(34, 181, 115, 0.2);
+    border: 1px solid rgba(34, 181, 115, 0.4);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 600;
 }

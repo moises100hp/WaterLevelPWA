@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build *)",
+      "Bash(tasklist *)",
+      "Bash(powershell -Command \"Get-Process -Id 25184 | Select-Object Id,ProcessName,Path\" 2>&1)",
+      "Bash(npx --yes playwright install chromium --with-deps)",
+      "Bash(command -v python3)",
+      "Bash(command -v python)",
+      "Bash(command -v node)",
+      "Bash(node test.js)",
+      "Bash(node debug.js)",
+      "Bash(python3 -c ' *)",
+      "Bash(node *)",
+      "Bash(curl -sv http://localhost:5280/WaterLevelPWA.styles.css)",
+      "Bash(powershell -NoProfile -Command \"Get-Process -Name dotnet -ErrorAction SilentlyContinue | Stop-Process -Force\")",
+      "Bash(netstat -ano)",
+      "Bash(ASPNETCORE_ENVIRONMENT=\"Development\" ASPNETCORE_URLS=\"http://localhost:5281\" ApiSettings__BaseUrl=\"http://localhost:5042/\" dotnet run --no-launch-profile)",
+      "Bash(disown)",
+      "Bash(cd C:\\\\Users\\\\MAYCON~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Projeto-water-level-WaterLevelPWA-WaterLevelPWA-WaterLevelPWA\\\\1aa09a60-a529-4626-94df-b73527531be3\\\\scratchpad *)",
+      "Bash(pkill -f \"mock-api.js\")",
+      "Bash(pkill -f \"node.*mock-api\")",
+      "Bash(git -C \"C:\\\\Projeto water level\\\\WaterLevelPWA\\\\WaterLevelPWA\\\\WaterLevelPWA\" status --short)",
+      "WebFetch(domain:raw.githubusercontent.com)"
+    ]
+  }
+}
