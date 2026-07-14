@@ -4,6 +4,6 @@ namespace WaterLevelPWA.Service
 {
     public interface IWaterLevelService
     {
-        Task<WaterLevelDTO?> GetLevelAsync(string deviceId);
+        Task<WaterLevelDTO?> GetLevelAsync(int deviceId);
     }
 }
